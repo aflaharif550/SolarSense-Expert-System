@@ -1,0 +1,417 @@
+{
+  "Karachi family home (load-shedding, backup)": {
+    "description": "Typical Karachi house with 6-hour night outages, two inverter ACs and an old UPS.",
+    "inputs": {
+      "city": "Karachi",
+      "monthly_units": 650,
+      "monthly_bill": 42000,
+      "property_type": "House",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 3.0,
+      "grid_status": "Grid with load-shedding",
+      "appliances": {
+        "Ceiling fan": 6,
+        "LED light": 12,
+        "Refrigerator": 1,
+        "Inverter AC (1.5 ton)": 2,
+        "Water pump (1 HP)": 1,
+        "Washing machine": 1,
+        "Television": 1,
+        "Clothes iron": 1
+      },
+      "critical_loads": [
+        "Ceiling fan",
+        "LED light",
+        "Refrigerator",
+        "Television"
+      ],
+      "outage_hours": 6,
+      "night_outages": true,
+      "desired_backup_hours": 6,
+      "existing_backup": "UPS / Inverter",
+      "voltage_issues": true,
+      "roof_type": "RCC concrete roof",
+      "roof_area": 600,
+      "shading": "No shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Owner",
+      "budget": 1500000,
+      "priority": "Reliable backup power",
+      "net_metering_interest": "Yes",
+      "stay_years": 15
+    }
+  },
+  "Lahore bungalow (reliable grid, max savings)": {
+    "description": "Large three-phase home with high bills, several ACs and a geyser.",
+    "inputs": {
+      "city": "Lahore",
+      "monthly_units": 1400,
+      "monthly_bill": 85000,
+      "property_type": "House",
+      "phase": "Three-phase",
+      "sanctioned_load_kw": 15.0,
+      "grid_status": "Reliable grid",
+      "appliances": {
+        "Ceiling fan": 10,
+        "LED light": 25,
+        "Refrigerator": 2,
+        "Deep freezer": 1,
+        "Inverter AC (1.5 ton)": 2,
+        "Non-inverter AC (1.5 ton)": 2,
+        "Electric geyser": 1,
+        "Water dispenser": 1,
+        "Microwave oven": 1,
+        "Television": 2,
+        "Computer / laptop": 2
+      },
+      "critical_loads": [],
+      "outage_hours": 0,
+      "night_outages": false,
+      "desired_backup_hours": 0,
+      "existing_backup": "None",
+      "voltage_issues": false,
+      "roof_type": "RCC concrete roof",
+      "roof_area": 1500,
+      "shading": "No shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Owner",
+      "budget": 4000000,
+      "priority": "Maximum bill savings",
+      "net_metering_interest": "Yes",
+      "stay_years": 20
+    }
+  },
+  "Islamabad rented flat (tight budget)": {
+    "description": "Tenant in an apartment with a tiny shared roof and a small budget.",
+    "inputs": {
+      "city": "Islamabad",
+      "monthly_units": 250,
+      "monthly_bill": 9000,
+      "property_type": "Apartment / Flat",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 3.0,
+      "grid_status": "Grid with load-shedding",
+      "appliances": {
+        "Ceiling fan": 3,
+        "LED light": 6,
+        "Refrigerator": 1,
+        "Television": 1,
+        "Computer / laptop": 1
+      },
+      "critical_loads": [
+        "Ceiling fan",
+        "LED light"
+      ],
+      "outage_hours": 2,
+      "night_outages": false,
+      "desired_backup_hours": 0,
+      "existing_backup": "None",
+      "voltage_issues": false,
+      "roof_type": "RCC concrete roof",
+      "roof_area": 100,
+      "shading": "Partial shading",
+      "orientation": "East-West",
+      "ownership": "Tenant",
+      "budget": 80000,
+      "priority": "Lowest upfront cost",
+      "net_metering_interest": "Not sure",
+      "stay_years": 2
+    }
+  },
+  "Bahawalpur off-grid farmhouse": {
+    "description": "Rural farmhouse with no grid connection, water pumps and a diesel generator.",
+    "inputs": {
+      "city": "Bahawalpur",
+      "monthly_units": 0,
+      "monthly_bill": 0,
+      "property_type": "Farmhouse / Rural",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 0.0,
+      "grid_status": "No grid connection",
+      "appliances": {
+        "Ceiling fan": 4,
+        "LED light": 8,
+        "Refrigerator": 1,
+        "Water pump (1 HP)": 2,
+        "Television": 1,
+        "Air cooler": 2
+      },
+      "critical_loads": [
+        "Ceiling fan",
+        "LED light",
+        "Refrigerator"
+      ],
+      "outage_hours": 0,
+      "night_outages": false,
+      "desired_backup_hours": 0,
+      "existing_backup": "Generator",
+      "voltage_issues": false,
+      "roof_type": "Ground / open space",
+      "roof_area": 2000,
+      "shading": "No shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Owner",
+      "budget": 1500000,
+      "priority": "Balanced",
+      "net_metering_interest": "No",
+      "stay_years": 25
+    }
+  },
+  "Multan shop (severe outages)": {
+    "description": "Single-phase shop on a north-facing tin roof with 8-hour outages and ACs marked critical.",
+    "inputs": {
+      "city": "Multan",
+      "monthly_units": 900,
+      "monthly_bill": 60000,
+      "property_type": "Shop / Commercial",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 8.0,
+      "grid_status": "Grid with load-shedding",
+      "appliances": {
+        "Ceiling fan": 6,
+        "LED light": 20,
+        "Inverter AC (1 ton)": 2,
+        "Computer / laptop": 3,
+        "Refrigerator": 1,
+        "Water dispenser": 1
+      },
+      "critical_loads": [
+        "Ceiling fan",
+        "LED light",
+        "Computer / laptop",
+        "Inverter AC (1 ton)"
+      ],
+      "outage_hours": 8,
+      "night_outages": false,
+      "desired_backup_hours": 6,
+      "existing_backup": "None",
+      "voltage_issues": false,
+      "roof_type": "Metal / tin sheet roof",
+      "roof_area": 800,
+      "shading": "Partial shading",
+      "orientation": "North-facing",
+      "ownership": "Owner",
+      "budget": 900000,
+      "priority": "Lowest upfront cost",
+      "net_metering_interest": "Not sure",
+      "stay_years": 10
+    }
+  },
+  "Hyderabad home (budget backup)": {
+    "description": "Middle-income home that wants cheap backup for fans and lights.",
+    "inputs": {
+      "city": "Hyderabad",
+      "monthly_units": 400,
+      "monthly_bill": 22000,
+      "property_type": "House",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 4.0,
+      "grid_status": "Grid with load-shedding",
+      "appliances": {
+        "Ceiling fan": 4,
+        "LED light": 8,
+        "Refrigerator": 1,
+        "Television": 1,
+        "Air cooler": 1,
+        "Washing machine": 1
+      },
+      "critical_loads": [
+        "Ceiling fan",
+        "LED light",
+        "Television"
+      ],
+      "outage_hours": 5,
+      "night_outages": true,
+      "desired_backup_hours": 4,
+      "existing_backup": "None",
+      "voltage_issues": false,
+      "roof_type": "RCC concrete roof",
+      "roof_area": 400,
+      "shading": "No shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Owner",
+      "budget": 300000,
+      "priority": "Lowest upfront cost",
+      "net_metering_interest": "No",
+      "stay_years": 10
+    }
+  },
+  "Quetta house (mild outages, battery-ready)": {
+    "description": "Sunny Quetta home with short outages; appliance list is incomplete.",
+    "inputs": {
+      "city": "Quetta",
+      "monthly_units": 500,
+      "monthly_bill": 20000,
+      "property_type": "House",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 5.0,
+      "grid_status": "Grid with load-shedding",
+      "appliances": {
+        "Ceiling fan": 3,
+        "LED light": 6,
+        "Refrigerator": 1,
+        "Television": 1
+      },
+      "critical_loads": [
+        "LED light"
+      ],
+      "outage_hours": 3,
+      "night_outages": false,
+      "desired_backup_hours": 0,
+      "existing_backup": "None",
+      "voltage_issues": false,
+      "roof_type": "RCC concrete roof",
+      "roof_area": 700,
+      "shading": "No shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Owner",
+      "budget": 2000000,
+      "priority": "Balanced",
+      "net_metering_interest": "Not sure",
+      "stay_years": 12
+    }
+  },
+  "Gilgit cottage (low tariff, shaded)": {
+    "description": "Low-tariff northern home with heavy shade and an overstated appliance list.",
+    "inputs": {
+      "city": "Gilgit",
+      "monthly_units": 140,
+      "monthly_bill": 2520,
+      "property_type": "House",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 3.0,
+      "grid_status": "Reliable grid",
+      "appliances": {
+        "Ceiling fan": 4,
+        "LED light": 15,
+        "Refrigerator": 1,
+        "Deep freezer": 1,
+        "Television": 2,
+        "Computer / laptop": 2,
+        "Water dispenser": 1,
+        "Clothes iron": 1
+      },
+      "critical_loads": [],
+      "outage_hours": 0,
+      "night_outages": false,
+      "desired_backup_hours": 0,
+      "existing_backup": "None",
+      "voltage_issues": true,
+      "roof_type": "Metal / tin sheet roof",
+      "roof_area": 300,
+      "shading": "Heavy shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Owner",
+      "budget": 600000,
+      "priority": "Maximum bill savings",
+      "net_metering_interest": "No",
+      "stay_years": 3
+    }
+  },
+  "Faisalabad joint family (large single-phase)": {
+    "description": "Very high consumption on a single-phase connection with no critical loads marked.",
+    "inputs": {
+      "city": "Faisalabad",
+      "monthly_units": 1100,
+      "monthly_bill": 70000,
+      "property_type": "House",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 7.0,
+      "grid_status": "Grid with load-shedding",
+      "appliances": {
+        "Ceiling fan": 8,
+        "LED light": 15,
+        "Refrigerator": 1,
+        "Deep freezer": 1,
+        "Inverter AC (1.5 ton)": 3,
+        "Water pump (1 HP)": 1,
+        "Washing machine": 1,
+        "Clothes iron": 1,
+        "Television": 1,
+        "Microwave oven": 1
+      },
+      "critical_loads": [],
+      "outage_hours": 4,
+      "night_outages": false,
+      "desired_backup_hours": 3,
+      "existing_backup": "Generator",
+      "voltage_issues": false,
+      "roof_type": "RCC concrete roof",
+      "roof_area": 1000,
+      "shading": "No shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Owner",
+      "budget": 3200000,
+      "priority": "Maximum bill savings",
+      "net_metering_interest": "Yes",
+      "stay_years": 20
+    }
+  },
+  "Gwadar flat (roof too small)": {
+    "description": "Coastal flat with only a tiny balcony-sized space.",
+    "inputs": {
+      "city": "Gwadar",
+      "monthly_units": 300,
+      "monthly_bill": 16000,
+      "property_type": "Apartment / Flat",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 3.0,
+      "grid_status": "Grid with load-shedding",
+      "appliances": {
+        "Ceiling fan": 3,
+        "LED light": 6,
+        "Refrigerator": 1
+      },
+      "critical_loads": [
+        "Ceiling fan"
+      ],
+      "outage_hours": 4,
+      "night_outages": true,
+      "desired_backup_hours": 4,
+      "existing_backup": "None",
+      "voltage_issues": false,
+      "roof_type": "RCC concrete roof",
+      "roof_area": 50,
+      "shading": "No shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Tenant",
+      "budget": 300000,
+      "priority": "Balanced",
+      "net_metering_interest": "No",
+      "stay_years": 5
+    }
+  },
+  "Rawalpindi flat (no usable space)": {
+    "description": "Ground-floor flat with no roof or open-space access.",
+    "inputs": {
+      "city": "Rawalpindi",
+      "monthly_units": 280,
+      "monthly_bill": 14000,
+      "property_type": "Apartment / Flat",
+      "phase": "Single-phase",
+      "sanctioned_load_kw": 2.0,
+      "grid_status": "Reliable grid",
+      "appliances": {
+        "Ceiling fan": 3,
+        "LED light": 6,
+        "Refrigerator": 1,
+        "Television": 1
+      },
+      "critical_loads": [],
+      "outage_hours": 0,
+      "night_outages": false,
+      "desired_backup_hours": 0,
+      "existing_backup": "None",
+      "voltage_issues": false,
+      "roof_type": "No usable space",
+      "roof_area": 0,
+      "shading": "No shading",
+      "orientation": "South-facing / flat roof",
+      "ownership": "Tenant",
+      "budget": 200000,
+      "priority": "Balanced",
+      "net_metering_interest": "No",
+      "stay_years": 4
+    }
+  }
+}
