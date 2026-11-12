@@ -3,6 +3,8 @@
 import datetime
 import html
 
+from engine.diagnosis import build_diagnosis
+
 INPUT_LABELS = [
     ("city", "City"), ("property_type", "Property type"), ("phase", "Electricity connection"),
     ("grid_status", "Grid status"), ("monthly_units", "Monthly units (kWh)"),
@@ -73,6 +75,22 @@ def build_html_report(inputs, result):
         lis = "".join(f"<li><b>{_e(e['rule'])}</b> {_e(e['text'])}</li>" for e in entries)
         return f"<h2>{title}</h2><ul>{lis}</ul>"
 
+    diag = build_diagnosis(result)
+    summary = diag["summary"]
+    profile_rows = "".join(
+        f"<tr><td>{_e(i['title'])}</td><td>{_e(i['value'])}</td><td>{_e(i['status'])}</td>"
+        f"<td>{_e(i['evidence'])}</td><td>{_e(i['rule'])}</td></tr>" for i in diag["profile"])
+    problem_rows = "".join(
+        f"<tr><td class='sev-{_e(p['severity'])}'>{_e(p['severity'])}</td><td>{_e(p['problem'])}</td>"
+        f"<td>{_e(p['category'])}</td><td>{_e(p['finding'])}</td><td>{_e(p['rule'])}</td></tr>"
+        for p in diag["problems"]) or "<tr><td colspan='5'>No problems detected.</td></tr>"
+    diagnosis_html = (
+        f"<h2>Diagnosis</h2><div class='diag'><b>Overall: {_e(summary['level'])}.</b> {_e(summary['headline'])}</div>"
+        f"<h3>Situation profile</h3><table><tr><th>Aspect</th><th>Result</th><th>Status</th><th>Evidence</th>"
+        f"<th>Rule</th></tr>{profile_rows}</table>"
+        f"<h3>Problems detected ({summary['total']})</h3><table><tr><th>Severity</th><th>Problem</th>"
+        f"<th>Category</th><th>Finding</th><th>Rule</th></tr>{problem_rows}</table>")
+
     trace = "".join(
         f"<tr><td>{t['cycle']}</td><td>{_e(t['id'])}</td><td>{_e(t['name'])}</td>"
         f"<td>{_e(t['module'])}</td></tr>" for t in result["trace"])
@@ -89,15 +107,20 @@ header h1 {{ margin: 0 0 4px 0; }} header p {{ margin: 0; color: #e5e7eb; }}
 h2 {{ color: #1B2A41; border-bottom: 2px solid #F5A623; padding-bottom: 4px; margin-top: 28px; }}
 table {{ width: 100%; border-collapse: collapse; margin-top: 8px; }}
 td, th {{ border: 1px solid #e5e7eb; padding: 7px 10px; text-align: left; font-size: 14px; vertical-align: top; }}
-td:first-child {{ width: 38%; color: #4b5563; }}
+td:first-child {{ color: #4b5563; }}
 tr.total td {{ font-weight: bold; background: #FFF8E7; }}
 li {{ margin-bottom: 6px; }}
 .small {{ font-size: 12px; color: #6b7280; }}
+h3 {{ color: #1B2A41; margin: 18px 0 4px 0; font-size: 15px; }}
+.diag {{ background: #F8FAFC; border: 1px solid #e5e7eb; padding: 10px 14px; border-radius: 8px; }}
+td.sev-Critical {{ color: #B42318; font-weight: bold; }} td.sev-High {{ color: #E76F51; font-weight: bold; }}
+td.sev-Medium {{ color: #9a6206; font-weight: bold; }} td.sev-Low {{ color: #4C8BF5; font-weight: bold; }}
 </style></head><body>
 <header><h1>☀️ SolarSense Consultation Report</h1>
 <p>Rule-based expert system for residential solar decisions in Pakistan · Generated {now}</p></header>
 <div class="verdict"><b>Recommendation:</b> {_e(f.get('final_recommendation', ''))}<br>
 <b>Confidence:</b> {_e(f.get('overall_confidence', ''))}% ({_e(f.get('confidence_label', ''))})</div>
+{diagnosis_html}
 {design}
 {items('warnings', 'Warnings')}
 {items('recommendations', 'Recommendations')}

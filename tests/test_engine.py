@@ -115,5 +115,49 @@ class TestDecisions(unittest.TestCase):
             self.assertTrue(step["conclusions"])
 
 
+class TestDiagnosis(unittest.TestCase):
+    def setUp(self):
+        from engine.diagnosis import build_diagnosis
+        self.build = build_diagnosis
+
+    def test_infeasible_site_is_critical(self):
+        d = self.build(run("Gwadar flat (roof too small)"))
+        self.assertEqual(d["summary"]["level"], "Critical")
+        self.assertIn("R039", [p["rule"] for p in d["problems"]])
+
+    def test_severe_outages_diagnosed(self):
+        d = self.build(run("Multan shop (severe outages)"))
+        outage = next(i for i in d["profile"] if i["fact"] == "outage_severity")
+        self.assertEqual(outage["value"], "Severe")
+        self.assertEqual(outage["rule"], "R022")
+        self.assertIn("R046", [p["rule"] for p in d["problems"]])  # north-facing roof
+
+    def test_problems_sorted_by_severity(self):
+        from engine.diagnosis import SEVERITY_ORDER
+        for name in PERSONAS:
+            levels = [SEVERITY_ORDER.index(p["severity"]) for p in self.build(run(name))["problems"]]
+            self.assertEqual(levels, sorted(levels), name)
+
+    def test_every_finding_comes_from_a_fired_rule(self):
+        for name in PERSONAS:
+            result = run(name)
+            fired = set(result["fired_ids"])
+            d = self.build(result)
+            for item in d["profile"]:
+                self.assertIn(item["rule"], fired, name)
+            for p in d["problems"]:
+                self.assertIn(p["rule"], fired, name)
+
+    def test_off_grid_tariff_not_diagnosed(self):
+        d = self.build(run("Bahawalpur off-grid farmhouse"))
+        self.assertNotIn("tariff_band", [i["fact"] for i in d["profile"]])
+
+    def test_diagnosis_does_not_change_decisions(self):
+        result = run("Karachi family home (load-shedding, backup)")
+        before = dict(result["facts"])
+        self.build(result)
+        self.assertEqual(before.keys(), result["facts"].keys())
+
+
 if __name__ == "__main__":
     unittest.main()

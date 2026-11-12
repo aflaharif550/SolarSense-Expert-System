@@ -66,7 +66,7 @@ This installs **streamlit**, **pandas** and **plotly**. It needs internet and ta
 ```
 python -m unittest discover tests -v
 ```
-All 15 tests should say `ok`, ending with `OK`. One test proves that every one of the 129 rules fires in at least one sample profile.
+All 21 tests should say `ok`, ending with `OK`. One test proves that every one of the 129 rules fires in at least one sample profile.
 
 ### Step 8: Run the application
 
@@ -84,9 +84,10 @@ To stop the app: click the terminal and press **Ctrl + C**.
 2. On **Assessment**, choose a sample profile (e.g. *Karachi family home*) → **Load profile**.
 3. Look through the five tabs, then click **Run SolarSense analysis**.
 4. **Results** opens: check the KPI cards, the four tabs and **Download report**.
-5. Open **Explanation** to see the reasoning chain (each rule that fired, in order).
-6. Open **Knowledge Base** to search all 129 rules.
-7. Try other profiles. *Gwadar flat* and *Rawalpindi flat* show the "not feasible" path.
+5. Open **Diagnosis** (or click **Open full diagnosis** on Results) to see the situation profile and the problems detected, each with its rule ID.
+6. Open **Explanation** to see the reasoning chain (each rule that fired, in order).
+7. Open **Knowledge Base** to search all 129 rules.
+8. Try other profiles. *Gwadar flat* and *Rawalpindi flat* show the "not feasible" path.
 
 ### Common local errors and fixes
 

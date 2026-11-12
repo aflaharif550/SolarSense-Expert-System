@@ -77,6 +77,48 @@ CSS = f"""
 
 .ss-section-title {{ color: {NAVY}; font-weight: 700; font-size: 1.25rem; margin: 1.2rem 0 .6rem 0; }}
 .ss-footer {{ text-align: center; color: #9ca3af; font-size: .8rem; margin-top: 2.5rem; }}
+.ss-diag {{
+    background: #ffffff; border: 1px solid #ece6d8; border-top: 4px solid #9CA3AF; border-radius: 12px;
+    padding: .75rem .9rem; margin-bottom: .6rem;
+}}
+.ss-diag.Good {{ border-top-color: {TEAL}; }}
+.ss-diag.Watch {{ border-top-color: {AMBER}; }}
+.ss-diag.Concern {{ border-top-color: {CORAL}; }}
+.ss-diag.Critical {{ border-top-color: #B42318; background: #FDECEA; }}
+.ss-diag .t {{ font-size: .76rem; color: #6b7280; text-transform: uppercase; letter-spacing: .05em; }}
+.ss-diag .v {{ font-size: 1.12rem; font-weight: 700; color: {NAVY}; margin: .1rem 0; }}
+.ss-diag .e {{ font-size: .8rem; color: #4b5563; line-height: 1.4; }}
+.ss-diag .s {{ font-size: .72rem; font-weight: 700; margin-top: .35rem; }}
+.ss-diag.Good .s {{ color: #1d7064; }} .ss-diag.Watch .s {{ color: #9a6206; }}
+.ss-diag.Concern .s {{ color: #a3402a; }} .ss-diag.Critical .s {{ color: #B42318; }}
+
+.ss-problem {{
+    border: 1px solid #ece6d8; border-left: 5px solid #9CA3AF; border-radius: 10px;
+    padding: .65rem .9rem; margin-bottom: .55rem; background: #ffffff;
+}}
+.ss-problem.Critical {{ border-left-color: #B42318; background: #FDECEA; }}
+.ss-problem.High {{ border-left-color: {CORAL}; }}
+.ss-problem.Medium {{ border-left-color: {AMBER}; }}
+.ss-problem.Low {{ border-left-color: {SKY}; }}
+.ss-problem .head {{ font-weight: 700; color: {NAVY}; font-size: .97rem; }}
+.ss-problem .meta {{ font-size: .76rem; color: #6b7280; margin: .1rem 0 .3rem 0; }}
+.ss-problem .txt {{ font-size: .9rem; color: #1f2937; line-height: 1.5; }}
+.ss-sev {{
+    display: inline-block; border-radius: 999px; padding: .05rem .55rem; font-size: .72rem; font-weight: 700;
+    margin-right: .4rem; color: #ffffff; background: #9CA3AF;
+}}
+.ss-sev.Critical {{ background: #B42318; }} .ss-sev.High {{ background: {CORAL}; }}
+.ss-sev.Medium {{ background: #C98410; }} .ss-sev.Low {{ background: {SKY}; }} .ss-sev.None {{ background: {TEAL}; }}
+
+.ss-diag-summary {{
+    border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 1rem; border: 1px solid #ece6d8; background: #F8FAFC;
+}}
+.ss-diag-summary.Critical {{ background: #FDECEA; border-color: #F3B4A6; }}
+.ss-diag-summary.High {{ background: #FEF1EC; border-color: #F6C6B8; }}
+.ss-diag-summary.Medium {{ background: #FFF8E7; border-color: #F5D58C; }}
+.ss-diag-summary.Low, .ss-diag-summary.None {{ background: #E3F4F1; border-color: #A8DCD3; }}
+.ss-diag-summary h3 {{ margin: 0 0 .3rem 0; color: {NAVY}; font-size: 1.1rem; }}
+.ss-diag-summary p {{ margin: 0; color: #1f2937; font-size: .95rem; }}
 </style>
 """
 
@@ -120,3 +162,26 @@ def advice_item(kind, rule_id, text):
 
 def section_title(text):
     return f'<div class="ss-section-title">{esc(text)}</div>'
+
+
+def diag_item(item):
+    return (f'<div class="ss-diag {esc(item["status"])}"><div class="t">{esc(item["title"])}</div>'
+            f'<div class="v">{esc(item["value"])}</div><div class="e">{esc(item["evidence"])}</div>'
+            f'<div class="s">{esc(item["status"].upper())} · <span class="ss-rule">{esc(item["rule"])}</span></div></div>')
+
+
+def problem_item(p):
+    return (f'<div class="ss-problem {esc(p["severity"])}"><div class="head"><span class="ss-sev {esc(p["severity"])}">'
+            f'{esc(p["severity"].upper())}</span>{esc(p["problem"])}</div>'
+            f'<div class="meta"><span class="ss-rule">{esc(p["rule"])}</span>{esc(p["category"])} · '
+            f'certainty {esc(p["certainty"])}%</div><div class="txt">{esc(p["finding"])}</div></div>')
+
+
+def diag_summary(summary, title="Diagnosis"):
+    c = summary["counts"]
+    counts = " · ".join(f"{n} {k.lower()}" for k, n in c.items() if n) or "no problems"
+    attention = ", ".join(summary["attention"]) or "none"
+    return (f'<div class="ss-diag-summary {esc(summary["level"])}"><h3><span class="ss-sev {esc(summary["level"])}">'
+            f'{esc(summary["level"].upper())}</span>{esc(title)}</h3><p>{esc(summary["headline"])}</p>'
+            f'<p style="margin-top:.35rem;font-size:.85rem;color:#4b5563">Problems detected: {esc(counts)} · '
+            f'Conditions needing attention: {esc(attention)}</p></div>')

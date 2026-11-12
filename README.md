@@ -6,13 +6,14 @@ net-billing advice, cost, payback and safety warnings, and **explains every deci
 
 Built for the *Introduction to Artificial Intelligence* course with **Python** and **Streamlit**.
 
-**Live app:** `https://YOUR-APP-NAME.streamlit.app` ← replace with your deployed URL
+**Live app:** https://solar-sense-expert-system.streamlit.app/
 
 ## Key features
 
 - **129 IF-THEN rules** in 10 knowledge modules (load, outages, site, system type, battery, inverter, net billing, finance, safety, verdict)
 - **Forward-chaining inference engine** with salience-based conflict resolution, refraction and certainty factors
 - **Explanation facility**: step-by-step reasoning chain, working memory and "rules not fired"
+- **Diagnosis component**: situation profile (8 diagnosed conditions) and ranked problems (27 problem-detecting rules), each traced to its rule
 - **Knowledge-base browser** with search and CSV export
 - 11 ready-made **sample profiles** for demos (together they fire every rule)
 - Interactive charts, KPI dashboard and a downloadable HTML report
@@ -27,11 +28,12 @@ SolarSense/
 ├── knowledge_base/rules.py    # Knowledge base: all IF-THEN rules
 ├── engine/inference.py        # Forward-chaining inference engine
 ├── engine/calculations.py     # Sizing, battery, cost and payback calculations
+├── engine/diagnosis.py        # Diagnosis module: situation profile + ranked problems
 ├── engine/report.py           # Downloadable HTML report
 ├── ui/                        # Styles, charts, Streamlit compatibility helpers
 ├── data/parameters.json       # Editable prices, sun hours, policy values
 ├── data/personas.json         # Sample profiles / test cases
-├── tests/test_engine.py       # Automated tests (15 tests incl. rule coverage)
+├── tests/test_engine.py       # Automated tests (21 tests incl. rule coverage and diagnosis)
 ├── tools/export_rules.py      # Regenerates docs/Rule_Table.md and .csv
 └── docs/                      # Rule table for the report and viva
 ```

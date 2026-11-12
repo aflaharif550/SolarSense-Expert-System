@@ -18,6 +18,7 @@ st.set_page_config(
 
 from engine.calculations import CALCULATIONS, load_parameters  # noqa: E402
 from engine.inference import InferenceEngine, describe_actions, describe_condition  # noqa: E402
+from engine.diagnosis import build_diagnosis  # noqa: E402
 from engine.report import build_html_report  # noqa: E402
 from knowledge_base.rules import MODULES, RULES  # noqa: E402
 from ui import charts, styles  # noqa: E402
@@ -56,7 +57,7 @@ FLOAT_FIELDS = ["sanctioned_load_kw"]
 BOOL_FIELDS = ["night_outages", "voltage_issues"]
 TEXT_FIELDS = ["city"] + list(OPTIONS.keys())
 
-PAGES = ["🏠 Home", "🧭 Assessment", "📊 Results", "🧠 Explanation", "📚 Knowledge Base", "ℹ️ About"]
+PAGES = ["🏠 Home", "🧭 Assessment", "📊 Results", "🩺 Diagnosis", "🧠 Explanation", "📚 Knowledge Base", "ℹ️ About"]
 
 
 def app_key(name):
@@ -259,7 +260,7 @@ def page_home():
     with s3:
         html_block(styles.step(3, "Rules fire", "The forward-chaining engine fires matching rules until done."))
     with s4:
-        html_block(styles.step(4, "Get a design", "System design, costs, payback, warnings and reasoning."))
+        html_block(styles.step(4, "Diagnosis & design", "Problems diagnosed, system designed, costs, payback and reasoning."))
 
     st.write("")
     b1, b2, _ = st.columns([1, 1, 2])
@@ -401,6 +402,7 @@ def page_results():
     if not f.get("site_feasible", False):
         html_block(styles.verdict("Solar is not feasible at this site", f.get("final_recommendation", ""),
                                   styles.badge(f"Confidence {f.get('overall_confidence', '')}%", "bad"), bad=True))
+        diagnosis_teaser(result)
         show_advice(f)
         return
 
@@ -413,6 +415,7 @@ def page_results():
               + styles.badge(f"Confidence {f.get('overall_confidence')}% ({f.get('confidence_label')})")
               + styles.badge(f"{len(result['trace'])} rules fired"))
     html_block(styles.verdict("Recommended system", f.get("final_recommendation", ""), badges))
+    diagnosis_teaser(result)
 
     k = st.columns(6)
     battery_text = f"{f['battery_kwh']:.1f} kWh" if f.get("battery_needed") else "None"
@@ -511,6 +514,78 @@ def page_results():
     with d2:
         st.button("🧠 See the reasoning", on_click=go_to, args=("🧠 Explanation",))
     st.caption("Open the downloaded report in a browser and use Print → Save as PDF for a PDF copy.")
+
+
+def diagnosis_teaser(result):
+    """Short diagnosis summary shown on the Results page, with a link to the full page."""
+    diag = build_diagnosis(result)
+    html_block(styles.diag_summary(diag["summary"], "Diagnosis summary"))
+    st.button("🩺 Open full diagnosis", on_click=go_to, args=("🩺 Diagnosis",), key="open_diagnosis")
+
+
+def page_diagnosis():
+    ss = st.session_state
+    st.title("🩺 Diagnosis")
+    st.caption("What condition is this home or shop in, and what problems stand in the way of a good solar "
+               "system? Every finding below was concluded by a rule in the knowledge base.")
+    result = ss.get("result")
+    if not result:
+        no_result_notice()
+        return
+    diag = build_diagnosis(result)
+    summary = diag["summary"]
+
+    html_block(styles.diag_summary(summary, "Overall diagnosis"))
+    c = st.columns(4)
+    tiles = [("Problems detected", summary["total"], "by diagnostic rules"),
+             ("Critical / High", summary["counts"]["Critical"] + summary["counts"]["High"], "need action first"),
+             ("Medium / Low", summary["counts"]["Medium"] + summary["counts"]["Low"], "manageable"),
+             ("Diagnostic rules fired", len(diag["diagnostic_rules_fired"]), "evidence for this diagnosis")]
+    for col, (label, value, sub) in zip(c, tiles):
+        with col:
+            html_block(styles.kpi(label, value, sub))
+
+    html_block(styles.section_title("1. Situation profile"))
+    st.caption("How the expert system classified your situation. Status: GOOD, WATCH, CONCERN or CRITICAL.")
+    profile = diag["profile"]
+    for start in range(0, len(profile), 4):
+        cols = st.columns(4)
+        for col, item in zip(cols, profile[start:start + 4]):
+            with col:
+                html_block(styles.diag_item(item))
+
+    html_block(styles.section_title(f"2. Problems detected ({summary['total']})"))
+    if diag["problems"]:
+        st.caption("Sorted from most to least serious. Each problem shows the rule that detected it.")
+        for p in diag["problems"]:
+            html_block(styles.problem_item(p))
+    else:
+        st.success("No problems were detected by the diagnostic rules for this case.")
+
+    with st.expander("How does the diagnosis work?"):
+        st.markdown(
+            "Diagnosis means identifying the situation and its problems from the evidence you entered.\n\n"
+            "1. **Evidence:** your inputs plus facts derived by calculations (for example daily kWh and roof capacity).\n"
+            "2. **Diagnostic rules fire** during forward chaining. *Classification rules* name your condition "
+            "(e.g. R022: outage_hours ≥ 7 → load-shedding is *Severe*). *Problem-detection rules* recognise "
+            "problems (e.g. R039: roof capacity < 1 kW → *roof too small*).\n"
+            "3. **The diagnosis module** (`engine/diagnosis.py`) collects these conclusions, gives each problem a "
+            "category and severity, and orders them. It adds no new rules and changes no decision.\n"
+            "4. **Diagnosis drives decisions:** outage severity decides whether backup is needed, and a "
+            "*not feasible* site stops the system design.\n\n"
+            "Severity: **Critical** = the plan cannot go ahead · **High** = fix before buying · "
+            "**Medium** = manageable · **Low** = minor."
+        )
+        rows = [{"Fact diagnosed": i["fact"], "Result": str(i["value"]), "Rule": i["rule"],
+                 "Rule name": i["rule_name"]} for i in profile]
+        show_table(pd.DataFrame(rows))
+
+    st.write("")
+    b1, b2, _ = st.columns([1, 1, 2])
+    with b1:
+        st.button("📊 Back to results", on_click=go_to, args=("📊 Results",), key="diag_back")
+    with b2:
+        st.button("🧠 See the reasoning", on_click=go_to, args=("🧠 Explanation",), key="diag_reason")
 
 
 def page_explanation():
@@ -621,10 +696,11 @@ ARCHITECTURE_DOT = """
         KB [label="Knowledge base\\n(RULE_COUNT IF-THEN rules)", fillcolor="#FFF1D6"];
         CALC [label="Calculation module\\n(sizing, cost, payback)", fillcolor="#E3F4F1"];
         EXP [label="Explanation facility\\n(rule trace)", fillcolor="#E3F4F1"];
+        DIAG [label="Diagnosis module\\n(profile + problems)", fillcolor="#E3F4F1"];
         OUT [label="Results dashboard\\n+ HTML report", fillcolor="#FFF1D6"];
         UI -> WM [label="user facts"]; WM -> IE; KB -> IE [label="rules"];
         IE -> WM [label="new facts"]; IE -> CALC [label="calc actions"]; CALC -> WM;
-        IE -> EXP; WM -> OUT; EXP -> OUT;
+        IE -> EXP; WM -> OUT; EXP -> OUT; WM -> DIAG; EXP -> DIAG; DIAG -> OUT;
     }
 """
 
@@ -647,6 +723,7 @@ def page_about():
             "- **Inference engine:** `engine/inference.py`, forward chaining with salience-based conflict resolution and refraction\n"
             "- **Working memory:** dictionary of facts, growing as rules fire\n"
             "- **Explanation facility:** trace of fired rules with the values that matched\n"
+            "- **Diagnosis module:** `engine/diagnosis.py`, organises diagnostic rule conclusions into a situation profile and ranked problems\n"
             "- **Calculation module:** `engine/calculations.py` for sizing, costs and payback\n"
             "- **Parameters:** `data/parameters.json`, editable prices, sun hours and policy values"
         )
@@ -690,6 +767,8 @@ def main():
         page_assessment()
     elif page == "📊 Results":
         page_results()
+    elif page == "🩺 Diagnosis":
+        page_diagnosis()
     elif page == "🧠 Explanation":
         page_explanation()
     elif page == "📚 Knowledge Base":
